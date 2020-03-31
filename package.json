@@ -8,6 +8,10 @@
   "scripts": {
     "build": "NODE_ENV=production webpack --progress --colors --hide-modules"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdsuwwz/hoc-element.git"
+  },
   "dependencies": {
     "vue": "^2.5.17"
   },
