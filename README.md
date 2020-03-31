@@ -61,6 +61,7 @@ export default {
     })
   },
   methods: {
+    copyLink () {},
     setForbidden () {},
     setUnForbidden () {},
     async getList (query = this.filterFormParams) {
@@ -147,6 +148,25 @@ export default {
                 el: 'button',
                 click () {
                   this.setUnForbidden(row.id)
+                }
+              },
+              {
+                attrs: {
+                  label: '复制链接',
+                  type: 'text',
+                  size: 'medium',
+                  // 这里的指令来自 clipboard，只做为演示用，如有需要请自行安装
+                  directives: [
+                    {
+                      name: 'clipboard',
+                      value: `https://www.google.com`,
+                      arg: 'copy'
+                    }
+                  ]
+                },
+                el: 'button',
+                click () {
+                  this.copyLink(row)
                 }
               }
             ]

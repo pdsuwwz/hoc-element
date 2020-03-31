@@ -1,17 +1,10 @@
-<template>
-  <div>
-    <component
-      v-for="(item, index) in getCellList"
-      :key="index"
-      :is="elementsMapping[item.el]"
-      v-bind="getAttrsValue(item)"
-      @click="item.click.call(parent, row)"
-    >{{ item.attrs.label }}</component>
-  </div>
-</template>
 
 <script>
 export default {
+  created () {
+    this.$options.components = this.parent.$options.components
+    this.$options.directives = this.parent.$options.directives
+  },
   props: {
     parent: {
       type: Object,
@@ -46,10 +39,38 @@ export default {
   },
   methods: {
     getAttrsValue (item) {
+      const {
+        class: className,
+        style,
+        directives,
+        ...attrs
+      } = item.attrs
+
       return {
-        ...item.attrs
+        class: className,
+        style,
+        directives: directives || [],
+        props: attrs
       }
     }
+  },
+  render: function (createElement) {
+    return createElement('div',
+      this.getCellList.map((cellItem) => {
+        return createElement(
+          this.elementsMapping[cellItem.el],
+          {
+            on: {
+              click: cellItem.click.bind(this.parent, this.row)
+            },
+            domProps: {
+              innerHTML: this.getAttrsValue(cellItem).props.label
+            },
+            ...this.getAttrsValue(cellItem)
+          }
+        )
+      })
+    )
   }
 }
 </script>
