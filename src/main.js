@@ -23,7 +23,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-  version: '1.1.0',
+  version: '0.0.2',
   install,
   ...components
 }
