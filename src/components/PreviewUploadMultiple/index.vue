@@ -51,9 +51,8 @@
 <script>
 
 import PreviewUploadSingle from '@/components/PreviewUploadSingle'
-
 export default {
-  name: 'HocElementPreviewUploadMultiple',
+  name: 'UploadMultiple',
   inject: ['elForm'],
   components: {
     PreviewUploadSingle

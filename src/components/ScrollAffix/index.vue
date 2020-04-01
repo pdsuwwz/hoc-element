@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'HocElementScrollAffix',
+  name: 'Affix',
   props: {
     offsetTop: {
       type: Number,

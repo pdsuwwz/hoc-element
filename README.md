@@ -1,5 +1,16 @@
-<h1 align="center"> hoc-element </h1>
-<p align="center"> 📦 基于 element-ui 库的二次封装，该组件库主要针对现有列表页的 table 表格及 form 表单中的 rules 校验等场景，旨在减少重复的操作，让开发变得更简单。</p>
+# HocElement
+
+📦 基于 element-ui 库二次封装的一些高阶组件，该组件库主要解决 cms 等管理平台中繁琐的重复代码任务、通过一系列的配置化的思想将列表页的 table 表格及 form 表单中的 rules 校验等场景抽离了出来，旨在减少重复的操作，让开发变得更高效。
+
+
+## Flexibility
+
+* 通过配置化的方式生成 `table` 表格, 实现更高的自由度，无需再写大量的诸如 `<el-xxx>` 的模板
+* 对于表单的 `validate rules`, 可直接绑定全局的对应规则函数，无需每次复制粘贴
+* 针对图片 `upload`，只需两个参数 `API` 和 `v-model`，无需写一大堆参数
+* 比较友好的 `affix`, 支持自定义高度悬停
+
+---
 
 ## Install
 
@@ -21,11 +32,10 @@ Vue.use(HocElement)
 ## Components
 
 ```js
-// 名字太长，待优化
-HocElementTableList - 可配置的 Table
-HocElementScrollAffix - 固钉
-HocElementPreviewUploadSingle - 单张图片上传
-HocElementPreviewUploadMultiple - 多张个图片上传
+HocElTable - 可配置的 Table
+HocElAffix - 固钉
+HocElUploadSingle - 单张图片上传
+HocElUploadMultiple - 多张个图片上传
 ```
 
 ## Mixin
@@ -36,18 +46,18 @@ RulesForm - Form 表单规则
 
 ## Using
 
-* 示例 `HocElementTableList`
+* 示例 `HocElTable`
 
 ```html
 <template>
-  <HocElementTableList
+  <hoc-el-table
     title="产品列表"
     :paginationFilter="filterFormParams"
     :source="sourceList"
     :config="config"
     @getList="getList"
   >
-  </HocElementTableList>
+  </hoc-el-table>
 </template>
 <script>
 import XxxComponent from '@/components/XxxComponent'
@@ -180,13 +190,13 @@ export default {
 
 ```
 
-* 示例 `HocElementScrollAffix`
+* 示例 `HocElAffix`
 
 ```html
 <template>
-  <HocElementScrollAffix>
+  <hoc-el-affix>
     <div class="demo"></div>
-  </HocElementScrollAffix>
+  </hoc-el-affix>
 </template>
 <style lang="scss" scoped>
   .demo {
@@ -199,22 +209,22 @@ export default {
 
 ```
 
-* 示例 `HocElementPreviewUploadSingle`
+* 示例 `HocElUploadSingle`
 
 ```html
 <template>
-  <HocElementPreviewUploadSingle
+  <hoc-el-upload-single
     action="your API"
     v-model="value"
   />
 </template>
 ```
 
-* 示例 `HocElementPreviewUploadMultiple`
+* 示例 `HocElUploadMultiple`
 
 ```html
 <template>
-  <HocElementPreviewUploadMultiple
+  <hoc-el-upload-multiple
     action="your API"
     v-model="imageList"
   />
