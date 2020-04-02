@@ -62,7 +62,7 @@ import { isFunction } from '@/utils/type'
 import ElementsMapping from './ElementsMapping'
 import ComponentsMapping from './ComponentsMapping'
 export default {
-  name: 'HocElementTableList',
+  name: 'Table',
   components: {
     ElementsMapping,
     ComponentsMapping

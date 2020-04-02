@@ -14,7 +14,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './lib'),
     publicPath: '/lib/',
-    filename: 'hoc-ele.js',
+    filename: 'hoc-el.js',
     libraryTarget: 'umd'
   },
   module: {
