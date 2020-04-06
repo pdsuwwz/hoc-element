@@ -2,7 +2,7 @@
 
 ![npm](https://img.shields.io/npm/v/hoc-element)  ![NPM](https://img.shields.io/npm/l/hoc-element)
 
-📦 基于 element-ui 库二次封装的一些高阶组件，该组件库主要解决 cms 等管理平台中繁琐的重复代码任务、通过一系列的配置化的思想将列表页的 table 表格及 form 表单中的 rules 校验等场景抽离了出来，旨在减少重复的操作，让开发变得更高效。
+🚀 基于 element-ui 库二次封装的一些高阶组件，该组件库主要解决 cms 等管理平台中繁琐的重复代码任务、通过一系列的配置化的思想将列表页的 table 表格及 form 表单中的 rules 校验等场景抽离了出来，旨在减少重复的操作，让开发变得更高效。
 
 
 ## Flexibility
