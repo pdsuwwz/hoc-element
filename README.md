@@ -55,81 +55,206 @@ RulesForm - Form 表单规则
 
 ```html
 <template>
-  <hoc-el-table
-    title="产品列表"
-    :paginationFilter="filterFormParams"
-    :source="sourceList"
-    :config="config"
-    @getList="getList"
-  >
-  </hoc-el-table>
+  <div class="box-container">
+    <div class="content">
+      <hoc-el-table
+        title="表格Demo"
+        :source="sourceList"
+        :config="config"
+        :loading="loading"
+        :border="border"
+        :height="tableHeight"
+        :action-list="[
+          { text: '固定最右则列', action: () => setFixedRight() },
+          { text: '固定表头', action: () => setFixedRow() },
+          { text: '添加边框', action: () => setBorder() },
+          { text: '居中表头label', action: () => setLabelCenter() }
+        ]"
+        @getList="getList"
+      >
+      </hoc-el-table>
+
+    </div>
+  </div>
 </template>
+
 <script>
-import XxxComponent from '@/components/XxxComponent'
+
+import TableChildrenA from './table-children-a'
+import TableChildrenB from './table-children-b'
+
 export default {
   components: {
-    XxxComponent,
-  }
-  computed: {
-    ...mapGetters({
-      sourceList: 'Xxxmodule/sourceList',
-    })
+    TableChildrenA,
+    TableChildrenB
   },
   methods: {
-    copyLink () {},
-    setForbidden () {},
-    setUnForbidden () {},
-    async getList (query = this.filterFormParams) {
-      const res = await this.$store.dispatch(ProductLib.getAction('GetProductsList'), query)
-      return res
+    sleep (time = 1000) {
+      return new Promise((resolve) => setTimeout(resolve, time))
     },
-  }
+    async getList () {
+      this.loading = true
+      await this.sleep()
+      this.loading = false
+    },
+    setFixedRight () {
+      if (!this.fixedRight) {
+        this.fixedRight = 'right'
+      } else {
+        this.fixedRight = false
+      }
+    },
+    setFixedRow () {
+      if (!this.tableHeight) {
+        this.tableHeight = '350'
+      } else {
+        this.tableHeight = ''
+      }
+    },
+    setLabelCenter () {
+      if (!this.align) {
+        this.align = 'center'
+      } else {
+        this.align = ''
+      }
+    },
+    setBorder () {
+      this.border = !this.border
+    },
+    setPublish (row) {
+      this.$confirm(`此操作会将${row.name}发布到线上, 是否继续?`, `编号${row.id}提示`, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '发布成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消发布'
+        })
+      })
+    },
+    async setForbid (row) {
+      this.loading = true
+      await this.sleep()
+      this.loading = false
+      row.isForbid = !row.isForbid
+    }
+  },
   data () {
     return {
       loading: false,
-      filterFormParams: { // 获取列表时传递的参数
-        type: '',
-        // ...
-      },
-      config: [
+      fixedRight: 'right',
+      align: 'center',
+      tableHeight: '350',
+      border: false,
+      sourceList: {}
+    }
+  },
+  async created () {
+    await this.getList()
+    this.sourceList = this.mockData
+  },
+  computed: {
+    mockData () {
+      return {
+        data: [
+          { id: 0, name: '王小虎1', isForbid: false },
+          { id: 1, name: '王小虎2', isForbid: false },
+          { id: 2, name: '王小虎3', isForbid: false }
+        ],
+        meta: {
+          pagination: {
+            total: 3,
+            count: 10,
+            perPage: 10,
+            currentPage: 1,
+            totalPages: 1
+          }
+        }
+      }
+    },
+    config () {
+      const self = this
+      const align = self.align
+      return [
         {
           attrs: {
             label: '编号',
-            prop: 'id',
-            width: '90'
+            align,
+            prop: 'id'
           }
         },
         {
           attrs: {
-            label: '产品信息',
-            width: '350'
+            label: '名称',
+            prop: 'name',
+            align,
+            width: 200
+          }
+        },
+        {
+          attrs: {
+            label: '状态',
+            prop: 'isForbid',
+            align,
+            width: 200
           },
-          renderComponent (data) {
-            return [ // 必须为数组
-              { name: 'XxxComponent', data } // 返回「组件名」和「组件需要的数据」(使用 v-model 来绑定 data)
+          // 渲染字符串，默认不想展示 prop 的值，而是想对它做一些处理的时候，可以用这个方法
+          render (isForbid) {
+            return isForbid ? '✖️禁用中' : '✔️非禁用'
+          }
+        },
+        {
+          attrs: {
+            label: '详情A',
+            align,
+            width: 400
+          },
+          // 渲染组件，返回值为一个数组， data 作为组件的 v-model，适用于需要展示复杂的数据的场景
+          renderComponent (row) {
+            return [
+              { name: 'TableChildrenA', data: row }
             ]
           }
         },
         {
           attrs: {
-            label: '最后更新人',
-            width: '100',
-            prop: 'lastModifierBy'
-          }
-        },
-        {
-          attrs: {
-            label: '更新时间',
-            prop: 'updatedAt'
+            label: '详情B',
+            align,
+            width: 400
+          },
+          renderComponent (row) {
+            return [
+              { name: 'TableChildrenB', data: row }
+            ]
           }
         },
         {
           attrs: {
             label: '操作',
-            width: '260'
+            width: '260',
+            align,
+            fixed: self.fixedRight
           },
+          // 渲染 el-button，一般用在最后一列。目前只支持 el-button 和 click 事件，后续会根据需求支持任意的 el-xxx 和事件委托
           renderHTML (row) {
             return [
+              {
+                attrs: {
+                  label: '查看',
+                  type: 'text',
+                  size: 'medium'
+                },
+                el: 'button',
+                click () {
+                  this.$message(JSON.stringify(row))
+                }
+              },
               {
                 attrs: {
                   label: '编辑',
@@ -137,24 +262,37 @@ export default {
                   size: 'medium'
                 },
                 el: 'button',
-                click (row) {
-                  this.$router.push(`/product_lib/products/${row.id}/edit/`)
+                click () {
+                  this.$message(`编号${row.id} router -> 已跳转到编辑页面！`)
                 }
               },
-              !row.isForbid ? {
+              {
                 attrs: {
-                  label: '禁用',
+                  label: '发布',
                   type: 'text',
                   size: 'medium'
                 },
                 el: 'button',
                 click () {
-                  this.setForbidden(row.id)
+                  this.setPublish(row)
+                }
+              },
+              row.isForbid ? {
+                attrs: {
+                  label: '禁用',
+                  type: 'text',
+                  disabled: false,
+                  size: 'medium'
+                },
+                el: 'button',
+                click () {
+                  this.setForbid(row)
                 }
               } : {
                 attrs: {
                   label: '解除禁用',
                   type: 'text',
+                  disabled: false,
                   size: 'medium',
                   style: {
                     color: '#e6a23c'
@@ -162,26 +300,7 @@ export default {
                 },
                 el: 'button',
                 click () {
-                  this.setUnForbidden(row.id)
-                }
-              },
-              {
-                attrs: {
-                  label: '复制链接',
-                  type: 'text',
-                  size: 'medium',
-                  // 这里的指令来自 clipboard，只做为演示用，如有需要请自行安装
-                  directives: [
-                    {
-                      name: 'clipboard',
-                      value: `https://www.google.com`,
-                      arg: 'copy'
-                    }
-                  ]
-                },
-                el: 'button',
-                click () {
-                  this.copyLink(row)
+                  this.setForbid(row)
                 }
               }
             ]
@@ -193,23 +312,48 @@ export default {
 }
 </script>
 
+<style>
+* {
+  padding: 0;
+  margin: 0;
+}
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+</style>
+
+<style lang="scss" scoped>
+.box-container {
+  .content {
+    position: relative;
+    padding: 20px 20px 0;
+    margin: 0 auto;
+  }
+}
+</style>
+
 ```
 
 * 示例 `HocElAffix`
 
 ```html
 <template>
-  <hoc-el-affix>
+  <div style="height: 200px; border: 1px solid #000;">占位</div>
+  <hoc-el-affix
+    :offsetTop="10"
+  >
     <div class="demo"></div>
   </hoc-el-affix>
 </template>
 <style lang="scss" scoped>
-  .demo {
-    position: absolute;
-    width: 150px;
-    height: 300px;
-    border: 1px solid red;
-  }
+.demo {
+  width: 150px;
+  height: 300px;
+  border: 1px solid red;
+}
 </style>
 
 ```
