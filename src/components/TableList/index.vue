@@ -1,27 +1,36 @@
 <template>
   <div class="table-list-container">
+
     <header class="header">
       <h2>{{ title }}</h2>
+
       <div class="header-actions">
-        <el-button
-          v-for="(item, index) in actionList.filter(it => it.text)"
-          :key="index"
-          type="primary"
-          size="small"
-          v-bind="getHeaderActions(item)"
-          @click="item.action"
-        >{{ item.text }}</el-button>
+        <div class="overflow-box">
+          <el-button
+            v-for="(item, index) in actionList.filter(it => it.text)"
+            :key="index"
+            type="primary"
+            size="small"
+            v-bind="getHeaderActions(item)"
+            @click="item.action"
+          >{{ item.text }}</el-button>
+        </div>
       </div>
     </header>
+
     <el-card>
+
       <div class="filter-form-container">
         <slot/>
       </div>
+
       <el-table
         :data="source.data"
         style="width: 100%"
         v-loading="loading"
+        v-bind="$attrs"
       >
+
         <el-table-column
           v-for="(item, index) in config"
           :key="index"
@@ -41,7 +50,9 @@
             >{{ getValue(scope, item) }}</div>
           </template>
         </el-table-column>
+
       </el-table>
+
       <el-row class="table-pagination" justify="end" type="flex">
         <el-pagination
           background
@@ -53,7 +64,9 @@
           @current-change="handlePageChange"
         />
       </el-row>
+
     </el-card>
+
   </div>
 </template>
 
@@ -80,7 +93,7 @@ export default {
     },
     title: {
       type: String,
-      default: '这是标题'
+      default: ''
     },
     source: {
       type: Object,
@@ -99,7 +112,6 @@ export default {
       type: Array,
       default () {
         return [
-          { text: '', action: () => {} },
           { text: '', action: () => {} }
         ]
       }
@@ -130,18 +142,24 @@ export default {
     },
     getValue (scope, configItem) {
       const prop = configItem.attrs.prop
+
       const renderName = this.getMatchRenderFunction(configItem)
       const renderObj = this.renderTypeList[renderName]
+
       if (renderObj && this.isFunction(configItem[renderName])) {
         return renderObj.target
           ? this.getRenderValue(scope, configItem, { name: renderName, type: 'bind' })
           : this.getRenderValue(scope, configItem)
       }
+
       return scope.row[prop]
     },
     getRenderValue (scope, item, fn = { name: 'render', type: 'call' }) {
       const prop = item.attrs.prop
-      const args = (prop && scope.row[prop]) || scope.row
+
+      const propValue = prop && scope.row[prop]
+      const args = propValue !== undefined ? propValue : scope.row
+
       return item[fn.name][fn.type](this.getParent, args)
     },
     // 匹配 render 开头的函数
@@ -194,8 +212,16 @@ export default {
     padding-bottom: 20px;
     .header-actions {
       flex: 1;
-      display: flex;
-      justify-content: flex-end;
+      overflow: scroll;
+      .overflow-box {
+        display: flex;
+        flex-direction: row-reverse;
+        overflow: scroll;
+        white-space: nowrap;
+        /deep/ .el-button:nth-child(1) {
+          margin-left: 10px;
+        }
+      }
     }
   }
   .el-table {
