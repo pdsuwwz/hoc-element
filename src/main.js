@@ -11,7 +11,7 @@ const components = [
   HocElPreviewUploadMultiple
 ]
 
-const install = function (Vue, opts = {}) {
+const install = function (Vue) {
   components.forEach(component => {
     Vue.component(`HocEl${component.name}`, component)
   })
@@ -23,7 +23,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-  version: '0.1.1',
+  version: '0.2.1',
   install,
   ...components
 }
