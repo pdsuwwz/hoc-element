@@ -205,7 +205,7 @@ export default {
       return Object.assign({}, params, this.pagination)
     },
     getActionList () {
-      return this.actionList.reverse().filter(it => it.text)
+      return this.actionList.slice(0).reverse().filter(it => it.text)
     }
   }
 }
